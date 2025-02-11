@@ -1,0 +1,43 @@
+package com.doantotnghiep.DoAnTotNghiep.entity;
+
+import jakarta.persistence.*;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+
+
+@Entity
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@Table(name = "users")
+public class User {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Long id;
+
+    @Column(name = "user_name")
+    String userName;
+
+    @Column(name ="first_name")
+    String firstName;
+
+    @Column(name ="last_name")
+    String lastName;
+
+    String email;
+
+    @Column(name = "phone_number")
+    String phoneNumber;
+
+    String password;
+
+    @ManyToOne
+    @JoinColumn(name = "role_id", nullable = false)
+    private Role role;
+
+
+}
