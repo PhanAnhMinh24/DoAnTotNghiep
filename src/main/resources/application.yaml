@@ -29,8 +29,11 @@ spring:
     username: phananhminh124@gmail.com
     password: MiNH.241202@
     properties:
-      mail.smtp.auth: true
-      mail.smtp.starttls.enable: true
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
 server:
   port: 8088

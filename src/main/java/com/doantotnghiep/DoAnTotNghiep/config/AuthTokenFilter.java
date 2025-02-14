@@ -91,9 +91,11 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
         String signUp = EndpointConstants.AUTH + EndpointConstants.SIGN_UP;
         String signIn = EndpointConstants.AUTH + EndpointConstants.SIGN_IN;
+        String email = "/api/email/send-random-code";
         String actuator = EndpointConstants.ACTUATOR;
         String favicon = EndpointConstants.SWAGGER_ICO;
         return signIn.equals(path) || signUp.equals(path) || path.startsWith(actuator) || path.startsWith(favicon) ||
+                email.equals(path)||
                 (path.startsWith(EndpointConstants.SWAGGER_UI) && HttpMethod.GET.matches(method)) ||
                 (path.startsWith(EndpointConstants.SWAGGER_API_DOCS) && HttpMethod.GET.matches(method)) ||
                 (path.startsWith(EndpointConstants.SWAGGER_API_DOCS + EndpointConstants.SWAGGER_CONFIG) && HttpMethod.GET.matches(method));

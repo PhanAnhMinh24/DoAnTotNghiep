@@ -10,5 +10,5 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class VerificationCodeRequest {
     private String email;
+    private String verificationCode; // Thêm trường để nhận OTP từ người dùng
 }
-
