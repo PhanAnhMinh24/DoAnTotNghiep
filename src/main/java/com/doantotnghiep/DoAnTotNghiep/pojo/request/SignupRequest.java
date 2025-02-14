@@ -8,11 +8,11 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class SignupRequest {
-    String userName;     // Tên đăng nhập
+public class SignupRequest { // Tên đăng nhập
     String firstName;    // Tên
     String lastName;     // Họ
     String email;        // Email
     String phoneNumber;  // Số điện thoại
     String password;     // Mật khẩu
+    String isActive;
 }

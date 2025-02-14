@@ -1,84 +1,77 @@
 package com.doantotnghiep.DoAnTotNghiep.service.auth;
-import com.doantotnghiep.DoAnTotNghiep.entity.Role;
+
 import com.doantotnghiep.DoAnTotNghiep.entity.User;
+import com.doantotnghiep.DoAnTotNghiep.exception.AppException;
+import com.doantotnghiep.DoAnTotNghiep.exception.ErrorCode;
 import com.doantotnghiep.DoAnTotNghiep.pojo.request.LoginRequest;
 import com.doantotnghiep.DoAnTotNghiep.pojo.request.SignupRequest;
 import com.doantotnghiep.DoAnTotNghiep.pojo.response.JwtResponse;
-import com.doantotnghiep.DoAnTotNghiep.repository.RoleRepository;
 import com.doantotnghiep.DoAnTotNghiep.repository.UserRepository;
+//import com.doantotnghiep.DoAnTotNghiep.service.role.IRoleService;
+import com.doantotnghiep.DoAnTotNghiep.service.users.UserDetailsImpl;
 import com.doantotnghiep.DoAnTotNghiep.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 @Service
+@RequiredArgsConstructor
 public class AuthService implements IAuthService {
-    private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+//    private final IRoleService roleService;
     private final JwtUtils jwtUtils;
+    private final AuthenticationManager authenticationManager;
 
-    public AuthService(AuthenticationManager authenticationManager, UserRepository userRepository,
-                       RoleRepository roleRepository, PasswordEncoder passwordEncoder, JwtUtils jwtUtils) {
-        this.authenticationManager = authenticationManager;
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.jwtUtils = jwtUtils;
-    }
-
-    // Đăng ký người dùng
     @Override
     public User registerUser(SignupRequest signupRequest) {
-        if (userRepository.existsByUserName(signupRequest.getUserName())) {
-            throw new RuntimeException("Tên đăng nhập đã tồn tại!");
+        if (userRepository.existsByEmail(signupRequest.getEmail())) {
+            throw new AppException(ErrorCode.EMAIL_EXIST);
         }
 
-        if (userRepository.existsByUserName(signupRequest.getEmail())) {
-            throw new RuntimeException("Tên đăng nhập đã tồn tại!");
-        }
+        User user = User.builder()
+                .firstName(signupRequest.getFirstName())
+                .lastName(signupRequest.getLastName())
+                .email(signupRequest.getEmail())
+                .phoneNumber(signupRequest.getPhoneNumber())
+                .password(passwordEncoder.encode(signupRequest.getPassword()))
+                .isActive(true)
+                .build();
 
-        Optional<Role> userRole = roleRepository.findByName("USER");
-        if (userRole.isEmpty()) {
-            throw new RuntimeException("Vai trò mặc định không tồn tại!");
-        }
-
-        User newUser = new User();
-        newUser.setUserName(signupRequest.getUserName());
-        newUser.setFirstName(signupRequest.getFirstName());
-        newUser.setLastName(signupRequest.getLastName());
-        newUser.setEmail(signupRequest.getEmail());
-        newUser.setPhoneNumber(signupRequest.getPhoneNumber());
-        newUser.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
-        newUser.setRole(userRole.get());
-
-        return userRepository.save(newUser);
+        return userRepository.save(user);
     }
 
-    // Xử lý đăng nhập
     @Override
     public JwtResponse login(LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword())
+        );
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
-        // ✅ Lấy username từ authentication
-        String username = authentication.getName();
-        String jwt = jwtUtils.generateToken(username);
+        // Thêm thông tin vào claims
+        Map<String, Object> additionalClaims = new HashMap<>();
+        additionalClaims.put("email", userDetails.getEmail());
+        additionalClaims.put("firstName", userDetails.getFirstName());
+        additionalClaims.put("lastName", userDetails.getLastName());
 
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        return new JwtResponse(jwt, userDetails.getId(), userDetails.getUsername(),
-                userDetails.getAuthorities().stream()
-                        .map(GrantedAuthority::getAuthority) // Chuyển đổi từ GrantedAuthority -> String
-                        .toList());
+        // Tạo token với claims
+        String jwt = jwtUtils.generateToken(additionalClaims, userDetails.getEmail());
 
+        List<String> roles = userDetails.getAuthorities().stream()
+                .map(item -> item.getAuthority())
+                .collect(Collectors.toList());
+
+        return new JwtResponse(jwt, userDetails.getId(), userDetails.getEmail(), roles);
     }
+
+
 }

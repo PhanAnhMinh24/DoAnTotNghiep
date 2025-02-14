@@ -14,27 +14,33 @@ public class UserDetailsImpl implements UserDetails {
     private static final long serialVersionUID = 1L;
 
     private Long id;
-
     private String email;
+    private String firstName;
+    private String lastName;
 
     @JsonIgnore
     private String password;
 
     private Collection<? extends GrantedAuthority> authorities;
 
-    public UserDetailsImpl(Long id, String email, String password,
+    public UserDetailsImpl(Long id, String email, String firstName, String lastName, String password,
                            Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.password = password;
         this.authorities = authorities;
     }
 
     public static UserDetailsImpl build(User user) {
-        List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(user.getRole().getName()));
+        // Gán quyền mặc định là USER
+        List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));
         return new UserDetailsImpl(
                 user.getId(),
                 user.getEmail(),
+                user.getFirstName(),  // Thêm firstName
+                user.getLastName(),   // Thêm lastName
                 user.getPassword(),
                 authorities);
     }
@@ -48,6 +54,18 @@ public class UserDetailsImpl implements UserDetails {
         return id;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
     @Override
     public String getPassword() {
         return password;
@@ -55,7 +73,7 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public String getUsername() {
-        return email;
+        return email;  // Username lấy từ email
     }
 
     @Override

@@ -19,9 +19,6 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @Column(name = "user_name")
-    String userName;
-
     @Column(name ="first_name")
     String firstName;
 
@@ -35,9 +32,10 @@ public class User {
 
     String password;
 
-    @ManyToOne
-    @JoinColumn(name = "role_id", nullable = false)
-    private Role role;
+    @Column(name = "is_active")
+    boolean isActive;
+
+
 
 
 }
