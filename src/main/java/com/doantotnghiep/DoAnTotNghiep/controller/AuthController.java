@@ -30,12 +30,4 @@ public class AuthController {
         authService.registerUser(signupRequest);
         return ResponseEntity.ok().body(ApiResult.success(MessageConstants.USER_REGISTERED_SUCCESSFULLY));
     }
-
-
-
-    @PostMapping(value = EndpointConstants.VERIFY_OTP)
-    public ResponseEntity<ApiResult<String>> verifyOTP(@RequestBody VerificationCodeRequest request) {
-            String result = authService.verifyOTP(request);
-        return ResponseEntity.ok().body(ApiResult.success(result));
-    }
 }

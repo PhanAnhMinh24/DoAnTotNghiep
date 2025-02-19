@@ -3,15 +3,15 @@ package com.doantotnghiep.DoAnTotNghiep.pojo.response;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.util.List;
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class JwtResponse {
-    String token;
-    Long id;
-    String userName;
+public class ProfileResponse {
+    String firstName;
+    String lastName;
+    String email;  // Trả về email nhưng không có password
+    String phoneNumber;
+    String profileImg;
 }

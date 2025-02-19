@@ -14,5 +14,5 @@ public class SignupRequest { // Tên đăng nhập
     String email;        // Email
     String phoneNumber;  // Số điện thoại
     String password;     // Mật khẩu
-    String isActive;
+    String profileImg;
 }
