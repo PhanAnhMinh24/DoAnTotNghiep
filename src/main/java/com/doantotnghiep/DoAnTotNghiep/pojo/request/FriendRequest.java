@@ -8,7 +8,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class VerificationCodeRequest {
-  String email;
-  String verificationCode; // Thêm trường để nhận OTP từ người dùng
+public class FriendRequest {
+    Long friendId; // ID của người bạn muốn thêm
+    String relation; // Mối quan hệ (Bạn thân, Gia đình, ...)
 }

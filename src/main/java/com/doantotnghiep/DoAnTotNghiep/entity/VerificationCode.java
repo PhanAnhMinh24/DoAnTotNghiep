@@ -30,7 +30,6 @@ public class VerificationCode {
     LocalDateTime expiresAt;
 
     @Column(name = "is_verified", nullable = false)
+    @Builder.Default
     boolean isVerified = false;
-
-
 }

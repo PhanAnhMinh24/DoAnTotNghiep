@@ -8,7 +8,9 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class VerificationCodeRequest {
-  String email;
-  String verificationCode; // Thêm trường để nhận OTP từ người dùng
+public class ProfileRequest {
+   String firstName;
+   String lastName;
+   String phoneNumber;
+   String profileImg;
 }

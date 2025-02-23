@@ -49,8 +49,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                     UserDetails userDetails = userDetailsService.loadUserByUsername(username);
                     UsernamePasswordAuthenticationToken authentication =
                             new UsernamePasswordAuthenticationToken(
-                                    userDetails,
-                                    null,
+                                    userDetails.getUsername(),
+                                    request.getHeader("Authorization"),
                                     userDetails.getAuthorities());
                     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
@@ -89,15 +89,16 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         String path = request.getServletPath();
         String method = request.getMethod();
 
-        String signUp = EndpointConstants.AUTH + EndpointConstants.SIGN_UP;
-        String signIn = EndpointConstants.AUTH + EndpointConstants.SIGN_IN;
-        String email = "/api/email/send-random-code";
-        String actuator = EndpointConstants.ACTUATOR;
-        String favicon = EndpointConstants.SWAGGER_ICO;
-        return signIn.equals(path) || signUp.equals(path) || path.startsWith(actuator) || path.startsWith(favicon) ||
-                email.equals(path)||
+        return path.equals(EndpointConstants.AUTH + EndpointConstants.SIGN_IN) ||
+                path.equals(EndpointConstants.AUTH + EndpointConstants.SIGN_UP) ||
+                path.equals( EndpointConstants.OTP +EndpointConstants.OTP_SEND) ||
+                path.equals( EndpointConstants.OTP + EndpointConstants.OTP_VERIFY) ||
+                path.equals( EndpointConstants.OTP + EndpointConstants.OTP_RESET_PASSWORD) ||
+                path.startsWith(EndpointConstants.ACTUATOR) ||
+                path.startsWith(EndpointConstants.SWAGGER_ICO) ||
                 (path.startsWith(EndpointConstants.SWAGGER_UI) && HttpMethod.GET.matches(method)) ||
                 (path.startsWith(EndpointConstants.SWAGGER_API_DOCS) && HttpMethod.GET.matches(method)) ||
                 (path.startsWith(EndpointConstants.SWAGGER_API_DOCS + EndpointConstants.SWAGGER_CONFIG) && HttpMethod.GET.matches(method));
     }
+
 }

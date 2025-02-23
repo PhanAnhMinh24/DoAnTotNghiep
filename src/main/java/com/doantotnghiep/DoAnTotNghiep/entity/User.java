@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-
 @Entity
 @Getter
 @Setter
@@ -35,7 +34,7 @@ public class User {
     @Column(name = "is_active")
     boolean isActive;
 
-
-
+    @Column(name = "profile_img")
+    String profileImg; // Thêm trường ảnh đại diện
 
 }

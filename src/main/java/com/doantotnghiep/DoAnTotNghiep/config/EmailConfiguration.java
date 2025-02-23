@@ -1,5 +1,7 @@
 package com.doantotnghiep.DoAnTotNghiep.config;
 
+import jakarta.mail.PasswordAuthentication;
+import jakarta.mail.Session;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.mail.javamail.JavaMailSender;
