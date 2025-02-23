@@ -73,6 +73,8 @@ public class AuthService implements IAuthService {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
 
+
+
         // Lấy thông tin người dùng
         Map<String, Object> additionalClaims = new HashMap<>();
         additionalClaims.put("email", user.getEmail());

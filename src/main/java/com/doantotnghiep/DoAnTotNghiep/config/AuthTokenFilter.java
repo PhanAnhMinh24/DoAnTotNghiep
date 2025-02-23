@@ -49,8 +49,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                     UserDetails userDetails = userDetailsService.loadUserByUsername(username);
                     UsernamePasswordAuthenticationToken authentication =
                             new UsernamePasswordAuthenticationToken(
-                                    userDetails,
-                                    null,
+                                    userDetails.getUsername(),
+                                    request.getHeader("Authorization"),
                                     userDetails.getAuthorities());
                     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
@@ -94,11 +94,6 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                 path.equals( EndpointConstants.OTP +EndpointConstants.OTP_SEND) ||
                 path.equals( EndpointConstants.OTP + EndpointConstants.OTP_VERIFY) ||
                 path.equals( EndpointConstants.OTP + EndpointConstants.OTP_RESET_PASSWORD) ||
-                path.startsWith(EndpointConstants.PROFILE) ||
-                path.startsWith(EndpointConstants.FRIENDS) ||
-                path.equals( EndpointConstants.FRIENDS + EndpointConstants.FRIENDS_ADD) ||
-                path.equals( EndpointConstants.FRIENDS + EndpointConstants.FRIENDS_LIST) ||
-                path.equals( EndpointConstants.FRIENDS + EndpointConstants.FRIENDS_REMOVE) ||
                 path.startsWith(EndpointConstants.ACTUATOR) ||
                 path.startsWith(EndpointConstants.SWAGGER_ICO) ||
                 (path.startsWith(EndpointConstants.SWAGGER_UI) && HttpMethod.GET.matches(method)) ||

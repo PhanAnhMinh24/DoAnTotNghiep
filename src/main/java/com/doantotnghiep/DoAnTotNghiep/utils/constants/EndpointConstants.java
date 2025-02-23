@@ -14,8 +14,8 @@ public class EndpointConstants {
 
     // 🔹 Auth Endpoints
     public static final String AUTH = "/auth";
-    public static final String SIGN_IN = AUTH + "/sign-in";
-    public static final String SIGN_UP = AUTH + "/sign-up";
+    public static final String SIGN_IN = "/sign-in";
+    public static final String SIGN_UP = "/sign-up";
 
     // 🔹 OTP Endpoints
     public static final String OTP = "/otp";
@@ -30,10 +30,10 @@ public class EndpointConstants {
 
 
     // 🔹 Friend Endpoints (Danh sách bạn bè)
-    public static final String FRIENDS = "/friends";
+    public static final String FRIENDS = "/api/friends";
     public static final String FRIENDS_ADD = "/add";       // Thêm bạn bè
-    public static final String FRIENDS_REMOVE ="/remove"; // Xóa bạn bè
-    public static final String FRIENDS_LIST = "/{userId}";
+    public static final String FRIENDS_REMOVE = "/remove"; // Xóa bạn bè
+    public static final String FRIENDS_LIST = "/{userId}"; // Lấy danh sách bạn bè của userId
 
     public static final String SOS_ALERTS = "/sos-alerts";
     public static final String SOS_ALERT_CREATE =  "/create";

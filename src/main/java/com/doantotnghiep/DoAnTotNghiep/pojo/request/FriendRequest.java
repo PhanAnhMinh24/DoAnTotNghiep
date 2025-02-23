@@ -9,7 +9,6 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class FriendRequest {
-    int userId;
-    int friendId;
-    String relation;
+    Long friendId; // ID của người bạn muốn thêm
+    String relation; // Mối quan hệ (Bạn thân, Gia đình, ...)
 }

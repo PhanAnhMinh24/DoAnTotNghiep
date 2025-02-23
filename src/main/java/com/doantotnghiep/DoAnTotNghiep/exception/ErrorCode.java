@@ -22,9 +22,17 @@ public enum ErrorCode {
     INVALID_OTP("invalid-otp", HttpStatus.BAD_REQUEST), // Thêm lỗi OTP không hợp lệ
     USER_NOT_FOUND("user-not-found", HttpStatus.BAD_REQUEST), // Thêm lỗi khi không tìm thấy người dùng
     NOT_FOUND("sos-not-found", HttpStatus.BAD_REQUEST), // Lỗi không tìm thấy tín hiệu sos
-    ACCOUNT_NOT_ACTIVE("account-not-active", HttpStatus.FORBIDDEN);
 
-    // Lỗi tài khoản chưa kích hoạt
+    SUPPLEMENT_YOURSELF("supplement-yourself", HttpStatus.BAD_REQUEST), //Lỗi thêm chính mình
+    ALREADY_FRIENDS("already-friends", HttpStatus.BAD_REQUEST), //Lỗi đã là bạn bè
+    NOT_FRIENDS("not-friends", HttpStatus.BAD_REQUEST),
+    ACCOUNT_NOT_ACTIVE("account-not-active", HttpStatus.FORBIDDEN), // Lỗi tài khoản chưa kích hoạt
+
+    /*
+     * Error Authentication
+     */
+    ERROR_JWT_IS_NOT_VALID("error-jwt-is-not-valid", HttpStatus.UNAUTHORIZED), // JWT không hợp lệ
+    ERROR_ANONYMOUS_AUTHENTICATION_TOKEN("error-anonymous-authentication-token", HttpStatus.UNAUTHORIZED); // Token anonymous không hợp lệ
 
     private final String message;
     private final HttpStatus status;

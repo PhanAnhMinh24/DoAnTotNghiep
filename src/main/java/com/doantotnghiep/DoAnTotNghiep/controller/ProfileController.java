@@ -1,30 +1,40 @@
 package com.doantotnghiep.DoAnTotNghiep.controller;
 
+import com.doantotnghiep.DoAnTotNghiep.pojo.request.ProfileRequest;
 import com.doantotnghiep.DoAnTotNghiep.entity.User;
 import com.doantotnghiep.DoAnTotNghiep.service.profile.IProfileService;
-import com.doantotnghiep.DoAnTotNghiep.utils.constants.EndpointConstants;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(EndpointConstants.PROFILE)
+@RequestMapping("/api/profile")
 @RequiredArgsConstructor
 public class ProfileController {
 
     private final IProfileService profileService;
 
-    // API lấy thông tin hồ sơ người dùng
-    @GetMapping(EndpointConstants.PROFILE_GET)
-    public ResponseEntity<User> getUserProfile(@PathVariable Long userId) {
-        User userProfile = profileService.getUserProfile(userId);
-        return ResponseEntity.ok(userProfile);
+    // Lấy thông tin hồ sơ từ token
+    @GetMapping
+    public ResponseEntity<User> getProfile(HttpServletRequest request) {
+        String token = extractToken(request);
+        return ResponseEntity.ok(profileService.getProfile(token));
     }
 
-    // API cập nhật thông tin hồ sơ người dùng
-    @PutMapping(EndpointConstants.PROFILE_EDIT)
-    public ResponseEntity<User> updateUserProfile(@PathVariable Long userId, @RequestBody User updatedUser) {
-        User updatedProfile = profileService.updateUserProfile(userId, updatedUser);
-        return ResponseEntity.ok(updatedProfile);
+    // Cập nhật hồ sơ
+    @PutMapping
+    public ResponseEntity<User> updateProfile(HttpServletRequest request, @RequestBody ProfileRequest profileRequest) {
+        String token = extractToken(request);
+        return ResponseEntity.ok(profileService.updateProfile(token, profileRequest));
+    }
+
+    // Hàm hỗ trợ để lấy token từ request
+    private String extractToken(HttpServletRequest request) {
+        String header = request.getHeader("Authorization");
+        if (header != null && header.startsWith("Bearer ")) {
+            return header.substring(7);
+        }
+        throw new RuntimeException("Token is missing");
     }
 }
