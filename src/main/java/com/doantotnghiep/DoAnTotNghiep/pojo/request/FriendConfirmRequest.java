@@ -1,5 +1,6 @@
 package com.doantotnghiep.DoAnTotNghiep.pojo.request;
 
+import com.doantotnghiep.DoAnTotNghiep.pojo.data.FriendStatus;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -8,6 +9,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class FriendRequest {
-    int friendId; // ID của người bạn muốn thêm
+public class FriendConfirmRequest {
+    Long friendId; // ID của người cần xác nhận
+    FriendStatus status; // "accepted" hoặc "rejected"
 }

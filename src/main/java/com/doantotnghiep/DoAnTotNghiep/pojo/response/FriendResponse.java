@@ -9,11 +9,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class ProfileResponse {
-    Long id;
-    String firstName;
-    String lastName;
-    String email;  // Trả về email nhưng không có password
-    String phoneNumber;
-    String profileImg;
+public class FriendResponse {
+    Integer friendRelationshipId;
+    ProfileResponse profileResponse;
 }

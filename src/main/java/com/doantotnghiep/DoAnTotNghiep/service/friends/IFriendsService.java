@@ -1,12 +1,18 @@
 package com.doantotnghiep.DoAnTotNghiep.service.friends;
 
-import com.doantotnghiep.DoAnTotNghiep.entity.Friends;
+import com.doantotnghiep.DoAnTotNghiep.pojo.request.FriendConfirmRequest;
 import com.doantotnghiep.DoAnTotNghiep.pojo.request.FriendRequest;
+import com.doantotnghiep.DoAnTotNghiep.pojo.response.FriendResponse;
+import com.doantotnghiep.DoAnTotNghiep.pojo.response.ProfileResponse;
 
 import java.util.List;
 
 public interface IFriendsService {
     void addFriend(FriendRequest request);
-    List<Friends> getFriendsList();
-    void removeFriend(int friendId);
+
+    void confirmFriendRequest(FriendConfirmRequest request);
+
+    List<FriendResponse> getFriendsList();
+
+    void removeFriend(Long friendId);
 }

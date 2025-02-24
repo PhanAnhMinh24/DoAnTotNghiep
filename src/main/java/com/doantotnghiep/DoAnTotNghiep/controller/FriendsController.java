@@ -1,7 +1,10 @@
 package com.doantotnghiep.DoAnTotNghiep.controller;
 
 import com.doantotnghiep.DoAnTotNghiep.entity.Friends;
+import com.doantotnghiep.DoAnTotNghiep.pojo.request.FriendConfirmRequest;
 import com.doantotnghiep.DoAnTotNghiep.pojo.request.FriendRequest;
+import com.doantotnghiep.DoAnTotNghiep.pojo.response.FriendResponse;
+import com.doantotnghiep.DoAnTotNghiep.pojo.response.ProfileResponse;
 import com.doantotnghiep.DoAnTotNghiep.service.friends.IFriendsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,25 +19,26 @@ public class FriendsController {
 
     private final IFriendsService friendsService;
 
-    // Thêm bạn bè
     @PostMapping()
-    public ResponseEntity<String> addFriend(
-            @RequestBody FriendRequest request) {
+    public ResponseEntity<String> addFriend(@RequestBody FriendRequest request) {
         friendsService.addFriend(request);
-        return ResponseEntity.ok("Thêm bạn bè thành công!");
+        return ResponseEntity.ok("Friend request sent.");
     }
 
-    // Lấy danh sách bạn bè
+    @PostMapping("/confirm")
+    public ResponseEntity<String> confirmFriend(@RequestBody FriendConfirmRequest request) {
+        friendsService.confirmFriendRequest(request);
+        return ResponseEntity.ok("Friend request updated.");
+    }
+
     @GetMapping("/list")
-    public ResponseEntity<List<Friends>> getFriendsList() {
+    public ResponseEntity<List<FriendResponse>> getFriendsList() {
         return ResponseEntity.ok(friendsService.getFriendsList());
     }
 
-    // Xóa bạn bè
-    @DeleteMapping("/{friendId}")
-    public ResponseEntity<String> removeFriend(
-            @PathVariable int friendId) {
+    @DeleteMapping("/remove/{friendId}")
+    public ResponseEntity<String> removeFriend(@PathVariable Long friendId) {
         friendsService.removeFriend(friendId);
-        return ResponseEntity.ok("Friend removed successfully!");
+        return ResponseEntity.ok("Friend removed successfully.");
     }
 }
