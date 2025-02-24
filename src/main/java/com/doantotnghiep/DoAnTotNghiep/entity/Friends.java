@@ -1,5 +1,6 @@
 package com.doantotnghiep.DoAnTotNghiep.entity;
 
+import com.doantotnghiep.DoAnTotNghiep.pojo.data.FriendStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -15,18 +16,20 @@ import lombok.experimental.FieldDefaults;
 public class Friends {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Tự động tăng
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false) // Liên kết với bảng Users
+    @JoinColumn(name = "user_id", nullable = false)
     User user;
 
     @Column(name = "friend_id", nullable = false)
-    int friendId;
+    Long friendId;
 
     @Column(name = "relation", length = 50)
-    String relation; // Quan hệ (Bố, Mẹ, Bạn thân, ...)
+    String relation;
 
-
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    FriendStatus status;
 }

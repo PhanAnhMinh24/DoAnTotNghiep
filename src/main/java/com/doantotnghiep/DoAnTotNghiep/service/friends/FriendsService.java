@@ -4,15 +4,25 @@ import com.doantotnghiep.DoAnTotNghiep.entity.Friends;
 import com.doantotnghiep.DoAnTotNghiep.entity.User;
 import com.doantotnghiep.DoAnTotNghiep.exception.AppException;
 import com.doantotnghiep.DoAnTotNghiep.exception.ErrorCode;
+import com.doantotnghiep.DoAnTotNghiep.pojo.data.FriendStatus;
+import com.doantotnghiep.DoAnTotNghiep.pojo.request.FriendConfirmRequest;
 import com.doantotnghiep.DoAnTotNghiep.pojo.request.FriendRequest;
+import com.doantotnghiep.DoAnTotNghiep.pojo.response.FriendResponse;
+import com.doantotnghiep.DoAnTotNghiep.pojo.response.ProfileResponse;
 import com.doantotnghiep.DoAnTotNghiep.repository.FriendsRepository;
+import com.doantotnghiep.DoAnTotNghiep.repository.ProfileRepository;
 import com.doantotnghiep.DoAnTotNghiep.repository.UserRepository;
 import com.doantotnghiep.DoAnTotNghiep.utils.BaseUserService;
-import com.doantotnghiep.DoAnTotNghiep.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -20,55 +30,88 @@ public class FriendsService implements IFriendsService {
 
     private final FriendsRepository friendsRepository;
     private final UserRepository userRepository;
-    private final JwtUtils jwtUtils;
     private final BaseUserService baseUserService;
+    private final ProfileRepository profileRepository;
 
-    // Thêm bạn bè
+
     @Override
+    @Transactional
     public void addFriend(FriendRequest request) {
-        User user = baseUserService.getCurrentUser();
-
-        // Kiểm tra xem có tự thêm chính mình không
-        if (user.getId().equals(request.getFriendId())) {
-            throw new AppException(ErrorCode.SUPPLEMENT_YOURSELF);
-        }
-
-        // Kiểm tra xem bạn có tồn tại không
+        User currentUser = baseUserService.getCurrentUser();
         User friend = userRepository.findById(request.getFriendId())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
-        // Kiểm tra xem đã là bạn bè chưa
-        if (friendsRepository.findByUserAndFriendId(user, request.getFriendId().intValue()).isPresent()) {
+        Optional<Friends> existingFriendRequest = friendsRepository.findByUserAndFriendId(currentUser, friend.getId());
+        if (existingFriendRequest.isPresent()) {
             throw new AppException(ErrorCode.ALREADY_FRIENDS);
         }
 
-        // Tạo quan hệ bạn bè mới
-        Friends newFriend = Friends.builder()
-                .user(user)
-                .friendId(Math.toIntExact(request.getFriendId()))
-                .relation(request.getRelation())
+        Friends friends = Friends.builder()
+                .user(currentUser)
+                .friendId(friend.getId())
+                .status(FriendStatus.pending)
                 .build();
 
-        friendsRepository.save(newFriend);
+        friendsRepository.save(friends);
     }
 
-    // Lấy danh sách bạn bè
     @Override
-    public List<Friends> getFriendsList() {
-        User user = baseUserService.getCurrentUser();
-        return friendsRepository.findByUser(user);
+    @Transactional
+    public void confirmFriendRequest(FriendConfirmRequest request) {
+        User currentUser = baseUserService.getCurrentUser();
+        Friends friendRequest = friendsRepository.findByUserAndFriendId(
+                        userRepository.findById(request.getFriendId())
+                                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND)),
+                        currentUser.getId())
+                .orElseThrow(() -> new AppException(ErrorCode.REQUEST_NOT_FOUND));
+
+        if (!FriendStatus.pending.equals(friendRequest.getStatus())) {
+            throw new AppException(ErrorCode.INVALID_REQUEST);
+        }
+
+        if (FriendStatus.accepted.equals(request.getStatus())) {
+            friendRequest.setStatus(FriendStatus.accepted);
+            friendsRepository.save(friendRequest);
+        } else if (FriendStatus.rejected.equals(request.getStatus())) {
+            friendsRepository.delete(friendRequest);
+        }
     }
 
-    // Xóa bạn bè
     @Override
-    public void removeFriend(int friendId) {
-        User user = baseUserService.getCurrentUser();
+    public List<FriendResponse> getFriendsList() {
+        User currentUser = baseUserService.getCurrentUser();
+        List<Friends> friends = friendsRepository.findByUserIdOrFriendId(currentUser.getId(), currentUser.getId());
+        List<Long> friendIds = friends.stream()
+                .filter(tmp -> FriendStatus.accepted.equals(tmp.getStatus()))
+                .flatMap(f -> Stream.of(f.getUser().getId(), f.getFriendId()))
+                .filter(id -> !id.equals(currentUser.getId()))
+                .distinct()
+                .toList();
+        List<ProfileResponse> profileResponses = baseUserService.getAllProfile(friendIds);
+        return friends.stream().map(friend -> {
+                    long profileId = currentUser.getId().equals(friend.getUser().getId()) ? friend.getFriendId() : friend.getUser().getId();
+                    ProfileResponse profileResponse = profileResponses.stream()
+                            .filter(item -> item.getId().equals(profileId))
+                            .findFirst().orElse(null);
+                    if (ObjectUtils.isNotEmpty(profileResponse)) {
+                        return FriendResponse.builder()
+                                .friendRelationshipId(friend.getId())
+                                .profileResponse(profileResponse)
+                                .build();
+                    }
+                    return null;
+                })
+                .filter(Objects::nonNull)
+                .toList();
+    }
 
-        // Tìm mối quan hệ bạn bè giữa user hiện tại và friendId
-        Friends friendship = friendsRepository.findByUserAndFriendId(user, friendId)
+    @Override
+    @Transactional
+    public void removeFriend(Long friendId) {
+        User currentUser = baseUserService.getCurrentUser();
+        Friends friendship = friendsRepository.findByUserAndFriendId(currentUser, friendId)
                 .orElseThrow(() -> new AppException(ErrorCode.NOT_FRIENDS));
 
-        // Nếu tồn tại, tiến hành xóa
         friendsRepository.delete(friendship);
     }
 }
