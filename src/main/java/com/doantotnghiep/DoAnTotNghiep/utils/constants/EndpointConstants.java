@@ -19,9 +19,9 @@ public class EndpointConstants {
 
     // 🔹 OTP Endpoints
     public static final String OTP = "/otp";
-    public static final String OTP_SEND =  "/resend-code";
-    public static final String OTP_VERIFY =  "/verify-otp";// Xác minh OTP
-    public static final String OTP_RESET_PASSWORD =  "/reset-password";// Xác minh OTP
+    public static final String OTP_SEND = "/resend-code";
+    public static final String OTP_VERIFY = "/verify-otp";// Xác minh OTP
+    public static final String OTP_RESET_PASSWORD = "/reset-password";// Xác minh OTP
 
     //Profile Endpoints
     public static final String PROFILE = "/profile";
@@ -36,11 +36,15 @@ public class EndpointConstants {
     public static final String FRIENDS_LIST = "/list";// Danh sách bạn bè
     public static final String FRIENDS_REMOVE = "{friendId}"; // Xóa bạn bè
     public static final String FRIENDS_SEARCH = "/search";
+    // SOS
+    public static final String SOS_ALERTS = "/api/sos-alerts";
+    public static final String SOS_LIST = "/list"; // Danh sách sos của user đó
 
-    public static final String SOS_ALERTS = "/sos-alerts";
-    public static final String SOS_ALERT_CREATE =  "/create";
-    public static final String SOS_ALERT_DISABLE =  "/disable/{id}";
-    public static final String SOS_ALERT_LIST = "/user/{userId}";
+    //
+    public static final String PERSONAL_SOS_ALERTS = "/api/personal_sos_alerts";
+    public static final String PERSONAL_SOS_LIST = "/list";
+
+
 
 
 }
