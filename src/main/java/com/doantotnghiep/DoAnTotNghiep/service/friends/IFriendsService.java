@@ -2,6 +2,7 @@ package com.doantotnghiep.DoAnTotNghiep.service.friends;
 
 import com.doantotnghiep.DoAnTotNghiep.pojo.request.FriendConfirmRequest;
 import com.doantotnghiep.DoAnTotNghiep.pojo.request.FriendRequest;
+import com.doantotnghiep.DoAnTotNghiep.pojo.request.SearchFriendRequest;
 import com.doantotnghiep.DoAnTotNghiep.pojo.response.FriendResponse;
 import com.doantotnghiep.DoAnTotNghiep.pojo.response.ProfileResponse;
 
@@ -14,5 +15,8 @@ public interface IFriendsService {
 
     List<FriendResponse> getFriendsList();
 
-    void removeFriend(Long friendId);
+    void removeFriend(FriendRequest request);
+
+    List<ProfileResponse> searchFriends(SearchFriendRequest request);
+
 }

@@ -13,7 +13,7 @@ public class ProfileResponse {
     Long id;
     String firstName;
     String lastName;
-    String email;  // Trả về email nhưng không có password
+    String email;
     String phoneNumber;
     String profileImg;
 }
