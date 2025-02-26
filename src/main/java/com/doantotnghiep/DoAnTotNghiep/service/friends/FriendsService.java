@@ -7,6 +7,7 @@ import com.doantotnghiep.DoAnTotNghiep.exception.ErrorCode;
 import com.doantotnghiep.DoAnTotNghiep.pojo.data.FriendStatus;
 import com.doantotnghiep.DoAnTotNghiep.pojo.request.FriendConfirmRequest;
 import com.doantotnghiep.DoAnTotNghiep.pojo.request.FriendRequest;
+import com.doantotnghiep.DoAnTotNghiep.pojo.request.SearchFriendRequest;
 import com.doantotnghiep.DoAnTotNghiep.pojo.response.FriendResponse;
 import com.doantotnghiep.DoAnTotNghiep.pojo.response.ProfileResponse;
 import com.doantotnghiep.DoAnTotNghiep.repository.FriendsRepository;
@@ -107,11 +108,34 @@ public class FriendsService implements IFriendsService {
 
     @Override
     @Transactional
-    public void removeFriend(Long friendId) {
+    public void removeFriend(FriendRequest request) {
         User currentUser = baseUserService.getCurrentUser();
-        Friends friendship = friendsRepository.findByUserAndFriendId(currentUser, friendId)
+        Friends friendship = friendsRepository.findByUserAndFriendId(currentUser, (long) request.getFriendId())
                 .orElseThrow(() -> new AppException(ErrorCode.NOT_FRIENDS));
 
         friendsRepository.delete(friendship);
     }
+
+    @Override
+    public List<ProfileResponse> searchFriends(SearchFriendRequest request) {
+        String keyword = request.getKeyword(); // Lấy từ khóa tìm kiếm từ request object
+        User currentUser = baseUserService.getCurrentUser(); // Lấy thông tin người dùng hiện tại
+
+        List<User> users = userRepository.findByPhoneNumberOrEmail(keyword).stream()
+                .filter(user -> !user.getId().equals(currentUser.getId())) // Loại bỏ chính mình khỏi kết quả
+                .toList();
+
+        if (users.isEmpty()) {
+            throw new AppException(ErrorCode.USER_NOT_FOUND);
+        }
+
+        List<Long> userIds = users.stream().map(User::getId).toList();
+        return baseUserService.getAllProfile(userIds);
+    }
+
+
+
+
+
+
 }

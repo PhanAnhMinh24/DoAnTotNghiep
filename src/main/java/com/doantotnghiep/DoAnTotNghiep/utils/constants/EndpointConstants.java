@@ -31,9 +31,11 @@ public class EndpointConstants {
 
     // 🔹 Friend Endpoints (Danh sách bạn bè)
     public static final String FRIENDS = "/api/friends";
-    public static final String FRIENDS_ADD = "/add";       // Thêm bạn bè
-    public static final String FRIENDS_REMOVE = "/remove"; // Xóa bạn bè
-    public static final String FRIENDS_LIST = "/{userId}"; // Lấy danh sách bạn bè của userId
+    public static final String FRIENDS_ADD = "/add";// Thêm bạn bè
+    public static final String FRIENDS_CONFIRM = "/confirm";// Thêm bạn bè
+    public static final String FRIENDS_LIST = "/list";// Danh sách bạn bè
+    public static final String FRIENDS_REMOVE = "{friendId}"; // Xóa bạn bè
+    public static final String FRIENDS_SEARCH = "/search";
 
     public static final String SOS_ALERTS = "/sos-alerts";
     public static final String SOS_ALERT_CREATE =  "/create";

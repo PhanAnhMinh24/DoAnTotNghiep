@@ -9,5 +9,5 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class FriendRequest {
-    int friendId; // ID của người bạn muốn thêm
+    Long friendId; // ID của người bạn muốn thêm
 }
