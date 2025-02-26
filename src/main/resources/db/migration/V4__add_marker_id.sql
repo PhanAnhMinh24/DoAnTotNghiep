@@ -1,0 +1,2 @@
+ALTER TABLE sos_alerts
+ADD COLUMN marker_id VARCHAR(50) NOT NULL;

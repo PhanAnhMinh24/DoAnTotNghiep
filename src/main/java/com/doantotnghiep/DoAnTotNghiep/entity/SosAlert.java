@@ -14,28 +14,33 @@ import java.time.LocalDateTime;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "sos_alerts")
-public class SosAlert extends BaseTimeEntity {
-
+public class SosAlert{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int id;
+    Long id;  // Giữ nguyên kiểu dữ liệu Long như trong SQL
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     User user;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT", nullable = false)
     String message;
 
+    @Column(name = "marker_id", length = 50, nullable = false)
+    String markerId;
+
+    @Column(nullable = false)
     double latitude;
+
+    @Column(nullable = false)
     double longitude;
 
-    @Column(name = "time_announcement")
+    @Column(name = "time_announcement", nullable = false)
     LocalDateTime timeAnnouncement;
 
-    @Column(name = "is_active")
+    @Column(name = "is_active", nullable = false)
     boolean isActive;
 
-    @Column(name = "number_alert")
+    @Column(name = "number_alert", nullable = false)
     int numberAlert;
 }
